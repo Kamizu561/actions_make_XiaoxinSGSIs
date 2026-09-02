@@ -57,9 +57,13 @@ jobs:
            sudo mv bin/setup.sh SGSI-build-tool/10/
            cd SGSI-build-tool/10
            sudo bash setup.sh
+           sudo pip3 install "protobuf<3.20" --break-system-packages
            
        - name: Download Rom
-         run: sudo wget -c ${{ steps.var.outputs.rom_url }} -O SGSI-build-tool/10/tmp/${{ steps.var.outputs.rom_name }}
+         run: |
+           sudo apt-get update
+           sudo apt-get install aria2 -y
+           aria2c -x 16 -s 16 -d SGSI-build-tool/10/tmp -o ${{ steps.var.outputs.rom_name }} "${{ steps.var.outputs.rom_url }}"
        
        - name: Build Super SGSI
          if: steps.var.outputs.make_super == 'true'
